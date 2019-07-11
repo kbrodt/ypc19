@@ -10,7 +10,7 @@ import pandas as pd
 import scipy.sparse as sp
 import tqdm
 from implicit.als import AlternatingLeastSquares
-from implicit.nearest_neighbours import BM25Recommender, ItemItemRecommender
+from implicit.nearest_neighbours import BM25Recommender
 
 
 def get_args():
@@ -20,7 +20,6 @@ def get_args():
     
     arg('--smoothing',   type=float, default=0.99)
     arg('--bm25-k',      type=int, default=600)
-    arg('--i2i-k',       type=int, default=200)
     arg('--als-factors', type=int, default=512)
     arg('--als-iters',   type=int, default=15)
     arg('--top-k',       type=int, default=400)
@@ -271,14 +270,13 @@ def main():
                       smoothing=args.smoothing, 
                       models_list=[
                           BM25Recommender(K=args.bm25_k),
-                          ItemItemRecommender(K=args.i2i_k),
                           AlternatingLeastSquares(factors=args.als_factors, iterations=args.als_iters),
                       ],
                       r=args.rating,
                       N=args.top_k
                      )
 
-    RATES = [5.5, 2, 6]
+    RATES = [5.5, 6]
     TOP_K = 100
 
     predictions = mix_solutions(result=result, rates=RATES, pictures_num_to_leave=TOP_K)
