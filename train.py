@@ -238,7 +238,7 @@ def evaluate(data, smoothing, models_list, r=50.0, N=200, EPS=0.00001):
     return result
 
 
-def mix_solutions(result, rates, max_score, pictures_num_to_leave):
+def mix_solutions(result, rates, pictures_num_to_leave):
     scores = dict()
     for user_uid in result[0]:
         scores[user_uid] = Counter()
@@ -247,7 +247,7 @@ def mix_solutions(result, rates, max_score, pictures_num_to_leave):
         for i, prediction in enumerate(pbar):
             for user_uid in prediction:
                 for pos, picture in enumerate(prediction[user_uid]):
-                    scores[user_uid][picture] += rates[i] * max_score * 0.99 ** pos
+                    scores[user_uid][picture] += rates[i] * 0.99 ** pos
 
     final_predictions = dict()
     with tqdm.tqdm(scores) as pbar:
@@ -277,13 +277,12 @@ def main():
                       r=args.rating,
                       N=args.top_k
                      )
-    
+
     RATES = [5.5, 2, 6]
-    MAX_SCORE = 100
     TOP_K = 100
-    
-    predictions = mix_solutions(result=result, rates=RATES, max_score=MAX_SCORE, pictures_num_to_leave=TOP_K)
-    
+
+    predictions = mix_solutions(result=result, rates=RATES, pictures_num_to_leave=TOP_K)
+
     test_users = pd.DataFrame.from_dict(predictions).T.reset_index()
     test_users.rename({'index': 'user_id'}, inplace=True, axis=1)
     test_users.sort_values('user_id', inplace=True)
