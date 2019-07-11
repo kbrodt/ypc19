@@ -16,15 +16,13 @@ $$r_0 + s^{md - d} + esp + 1$$,
 
 with initial rating $$r_0=50$$, smoothing parameter $$s=0.99$$,
 maximum transaction date $$md$$, current date of transaction $$d$$
-and small tolerance $$e=10^{-5}$$. Train 3 models from `implicit`:
+and small tolerance $$e=10^{-5}$$. Train 2 models from `implicit`:
 - `BM25Recommender` with 600 neighbours,
-- `ItemItemRecommender` with 200 neighbours,
 - `AlternatingLeastSquares` with 512 factors and 15 iterations
 
-and predict top 400 candidates with each model. Then blend these 3 models with weights 5.5, 2 and 6
-for `BM25Recommender`, `ItemItemRecommender` and `AlternatingLeastSquares` respectively.
-The blending consist in rearranging of candidates, where rank is multiplied by weight
-(see `mix_solutions` in [`train.py`](train.py)).
+and predict top 400 candidates with each model. Then blend these 3 models with weights 5.5 and 6
+for `BM25Recommender` and `AlternatingLeastSquares` respectively.
+The blending consist in rearranging of candidates (see `mix_solutions` in [`train.py`](train.py)).
 
 This will reach a mean average precision at 100 (mAP@100) multiplied by 10000 around 29
 (see [leaderboard](https://contest.yandex.ru/contest/12899/standings/)).
